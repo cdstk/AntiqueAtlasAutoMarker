@@ -37,6 +37,7 @@ public class AntiqueAtlasAutoMarker {
     public static final String MODID = "antiqueatlasautomarker";
     public static final String VERSION = "1.5.0";
     public static final String NAME = "AntiqueAtlasAutoMarker";
+    public static final String NETWORK_CHANNEL_NAME = "aaam"; // char limit is 20, can't use modid
     public static final Logger LOGGER = LogManager.getLogger();
     public static final boolean isDebugging = false;
     public static Configuration CONFIG;

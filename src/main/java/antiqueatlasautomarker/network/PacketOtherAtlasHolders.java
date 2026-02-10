@@ -71,6 +71,14 @@ public class PacketOtherAtlasHolders implements IMessage {
         });
     }
 
+    public static class ServerHandler implements IMessageHandler<PacketOtherAtlasHolders, IMessage> {
+
+        @Override
+        public IMessage onMessage(PacketOtherAtlasHolders message, MessageContext ctx) {
+            return null;
+        }
+    }
+
     @SideOnly(Side.CLIENT)
     public static class ClientHandler implements IMessageHandler<PacketOtherAtlasHolders, IMessage> {
 
