@@ -23,10 +23,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Mixin(GuiAtlas.class)
 public abstract class GuiAtlas_ShowOtherPlayers extends GuiComponent {
@@ -76,7 +74,7 @@ public abstract class GuiAtlas_ShowOtherPlayers extends GuiComponent {
             int drawYPosMod = (int) (-PLAYER_ICON_HEIGHT/2D*iconScale);
             int drawWidth = (int) Math.round(PLAYER_ICON_WIDTH*iconScale);
             int drawHeight = (int) Math.round(PLAYER_ICON_HEIGHT*iconScale);
-            this.aaam$filterNetworkPlayers().forEach(uuid -> {
+            this.aaam$getPlayerUUIDs().forEach(uuid -> {
                 double[] position = this.player.getUniqueID().equals(uuid)
                         ? new double[] { this.player.posX, this.player.posZ, this.player.rotationYaw }
                         : OtherPlayersDataHandler.INSTANCE.getData(this.stack).getOtherPlayerPosition(uuid);
@@ -94,7 +92,7 @@ public abstract class GuiAtlas_ShowOtherPlayers extends GuiComponent {
                 int drawYPos = getGuiY() + GuiAtlas.HEIGHT/2 + playerOffsetZ;
 
                 GlStateManager.pushMatrix();
-                if(renderPlayerHead){
+                if(renderPlayerHead && this.mc.player.connection.getPlayerInfo(uuid) != null){
                     NetworkPlayerInfo networkPlayerInfo = this.mc.player.connection.getPlayerInfo(uuid);
                     EntityPlayer entityPlayer = this.mc.world.getPlayerEntityByUUID(uuid);
                     boolean wearingHat = entityPlayer != null && entityPlayer.isWearing(EnumPlayerModelParts.HAT);
@@ -148,14 +146,10 @@ public abstract class GuiAtlas_ShowOtherPlayers extends GuiComponent {
         }
     }
 
-    /** Get UUIDs provided by Server and ensure they are on Client's network connections **/
+    /** Get UUIDs provided by Server and add client player **/
     @Unique
-    private Set<UUID> aaam$filterNetworkPlayers(){
-        Set<UUID> stackPlayers = new HashSet<>(OtherPlayersDataHandler.INSTANCE.getData(this.stack).getOtherPlayers());
-        if(this.mc.getConnection() != null){
-            Set<UUID> networkPlayers = this.mc.getConnection().getPlayerInfoMap().stream().map(networkPlayerInfo -> networkPlayerInfo.getGameProfile().getId()).collect(Collectors.toSet());
-            stackPlayers.removeIf(uuid -> !networkPlayers.contains(uuid));
-        }
+    private Set<UUID> aaam$getPlayerUUIDs(){
+        Set<UUID> stackPlayers = OtherPlayersDataHandler.INSTANCE.getData(this.stack).getOtherPlayers();
         stackPlayers.add(this.player.getUniqueID());
         return stackPlayers;
     }

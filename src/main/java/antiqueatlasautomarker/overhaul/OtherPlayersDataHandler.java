@@ -11,16 +11,16 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class OtherPlayersDataHandler {
 
     public static final OtherPlayersDataHandler INSTANCE = new OtherPlayersDataHandler();
 
-    private final Map<Integer, OtherPlayersData> otherPlayersDataCache = new ConcurrentHashMap<>();
+    private final Map<Integer, OtherPlayersData> otherPlayersDataCache = new HashMap<>();
 
     /** Loads data for the given atlas ID or creates a new one. */
     public OtherPlayersData getData(ItemStack stack) {
